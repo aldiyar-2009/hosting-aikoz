@@ -1,0 +1,81 @@
+/* История распаковки (раздел #story, собирает js/sections/story.js).
+   Раздел высокий (высоту ставит скрипт: 95 высот экрана на сцену), сцена внутри приколота к экрану.
+   Цвета — только переменные из base.css. Двигаются только transform и opacity. */
+
+.story { position: relative; }
+
+/* сцена: приколота к верху окна на всё время прокрутки раздела */
+.story-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+@supports (height: 1svh) { .story-stage { height: 100svh; } }
+
+/* звёзды: слой на 20 px выше и ниже сцены — за историю он сдвигается на 20 px (transform ставит скрипт) */
+.story-sky { position: absolute; left: 0; right: 0; top: -20px; bottom: -20px; will-change: transform; }
+
+/* где стоит луна за сценой: 3D-композиция поднята на ту же долю экрана (CENTRE в js/scene/story-canvas.js),
+   поэтому предметы стоят перед диском. Меняете 47 % / 42 % здесь — поменяйте и там */
+.story-moon {
+  --d: min(62vh, 82vw);
+  position: absolute;
+  width: var(--d);
+  height: var(--d);
+  left: calc(50% - var(--d) / 2);
+  top: calc(47% - var(--d) / 2);
+}
+@supports (height: 1svh) { .story-moon { --d: min(62svh, 82vw); } }
+@media (max-aspect-ratio: 4/5) { .story-moon { top: calc(42% - var(--d) / 2); } }
+
+/* холст 3D: проявляется, когда модели готовы (.is-ready) */
+.story-canvas { position: absolute; inset: 0; opacity: 0; transition: opacity .3s cubic-bezier(0, 0, .2, 1); }
+.story-canvas.is-ready { opacity: 1; }
+
+/* «Загружаем 3D-модели…»: под диском луны, а не на нём */
+.story-under-moon { position: absolute; left: 0; right: 0; top: calc(47% + min(31vh, 41vw) + 20px); }
+@media (max-aspect-ratio: 4/5) { .story-under-moon { top: calc(42% + min(31vh, 41vw) + 20px); } }
+.story-loading { text-align: center; }
+
+/* под подписью истории: вещи, улетающие из сцены, проходят за текстом, поэтому небо там сгущено —
+   вдоль всего низа на вертикальных экранах и только в углу подписи на широких, где полоса через весь
+   низ разрезала бы луну */
+.story-shade { background: linear-gradient(to top, var(--bg) 0%, transparent 100%); }
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  .story-shade {
+    background: linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 72%, transparent) 48%, color-mix(in srgb, var(--bg) 0%, transparent) 100%);
+  }
+  @media (min-width: 640px) and (min-aspect-ratio: 4/5) {
+    .story-shade {
+      background: radial-gradient(ellipse 60% 100% at 0% 100%, var(--bg) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 45%, color-mix(in srgb, var(--bg) 0%, transparent) 100%);
+    }
+  }
+}
+
+/* низ сцены: подпись, шесть лун и «Пропустить». Сам блок нажатия пропускает — ловят их только кнопки */
+.story-bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 64px 16px 20px; pointer-events: none; }
+/* место под заголовок и две-три строки текста, чтобы луны под ними не прыгали */
+.story-caption { min-height: 118px; }
+.story-text { margin-top: 8px; max-width: 448px; font-size: 17px; line-height: 1.6; color: var(--muted); }
+.story-controls { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* шесть лун: кнопка 44 px, луна внутри 22 px; выбранная — в полный размер и с ореолом */
+.story-phases { display: flex; margin-left: -11px; pointer-events: auto; }
+.story-phase { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; }
+.story-phase-moon {
+  display: flex; border-radius: 999px;
+  opacity: .6; transform: scale(.64);
+  transition: transform .3s var(--ease-enter), opacity .3s var(--ease-enter);
+}
+.story-phase.is-on .story-phase-moon { opacity: 1; transform: scale(1); box-shadow: var(--shadow-halo); }
+
+/* «Пропустить к очкам»: на телефоне — круглая кнопка со значком, с 640 px — кнопка со словами */
+.story-skip-icon, .story-skip-wide { pointer-events: auto; }
+.story .story-skip-wide { display: none; }
+
+/* «Листайте вниз»: вверху сцены, только на первой сцене */
+.story-hint { position: absolute; left: 0; right: 0; top: 80px; display: flex; justify-content: center; font-weight: 600; pointer-events: none; }
+.story-hint-pill { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; background: var(--chip); padding: 6px 12px; }
+
+@media (min-width: 640px) {
+  .story-bottom { padding-left: 32px; padding-right: 32px; padding-bottom: 28px; }
+  .story-caption { min-height: 112px; }
+  .story .story-skip-icon { display: none; }
+  .story .story-skip-wide { display: inline-flex; }
+}

@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <!-- Защита страницы: всё (скрипты, стили, шрифты, картинки) грузится только из этой же папки.
+       Поэтому в разметке нельзя писать style="…", <style> и код внутри <script>: браузер их не выполнит. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070B24">
+  <meta name="color-scheme" content="dark">
+  <title>Aikoz — умные очки с переводом разговора</title>
+  <meta name="description" content="Aikoz — умные очки из Казахстана: переводят разговор в ухо, снимают фото и видео от первого лица, играют музыку. Откройте коробку в 3D и попробуйте кнопки прямо на сайте.">
+  <!-- Ссылка в мессенджерах и заявках. Когда у сайта появится постоянный адрес, впишите его целиком
+       в og:url и перед og-image.png (например https://ваш-адрес/og-image.png): не все сервисы понимают короткий путь. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Aikoz">
+  <meta property="og:title" content="Aikoz — умные очки с переводом разговора">
+  <meta property="og:description" content="Умные очки из Казахстана: перевод разговора в ухо, фото и видео от первого лица, музыка. «Ай» — луна, «көз» — глаз.">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Aikoz: очки, которые переводят разговор. Серп луны на ночном небе.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="48x48">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- Шрифты первого экрана грузятся сразу, а не после стилей: текст не перескакивает.
+       При смене набора файлов в css/fonts.css обновите и эти ссылки. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/unbounded-cyrillic-wght-normal.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/unbounded-latin-wght-normal.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/manrope-cyrillic-wght-normal.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/manrope-latin-wght-normal.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/manrope-cyrillic-ext-wght-normal.woff2">
+  <!-- Стили: шрифты → основа (цвета, кнопки) → страница → распаковка → 3D-осмотр -->
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/page.css">
+  <link rel="stylesheet" href="css/story.css">
+  <link rel="stylesheet" href="css/explore.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+
+  <!-- ===== Космос за всей страницей: неподвижный слой, звёзды рисует js/moon/space-sky.js ===== -->
+  <div class="space-sky" aria-hidden="true"><canvas class="space-sky-stars"></canvas></div>
+
+  <!-- ===== Шапка: знак «Aikoz ✦», меню разделов (поведение — js/sections/chrome.js) ===== -->
+  <header class="site-header" id="site-header">
+    <div class="site-header__bg" aria-hidden="true"></div>
+    <div class="site-header__bar">
+      <div class="wrap site-header__row">
+        <button type="button" class="press site-header__mark" aria-label="Aikoz — в начало страницы" data-top>
+          <svg class="wordmark" viewBox="-10 -745 2750 770" width="100" height="28" fill="currentColor" focusable="false" aria-hidden="true"><path d="M704 -12L704 -12Q709 -12 709 -6Q709 0 704 0L704 0Q675 0 645 -2Q614 -4 585 -4L585 -4Q553 -4 530 -2Q506 0 477 0L477 0Q473 0 473 -6Q473 -12 477 -12L477 -12Q526 -12 537 -27Q548 -43 526 -89L526 -89L443 -261L204 -261L148 -132Q122 -71 145 -41Q168 -12 231 -12L231 -12Q236 -12 236 -6Q236 0 231 0L231 0Q201 0 176 -2Q151 -4 113 -4L113 -4Q76 -4 54 -2Q31 0 -1 0L-1 0Q-5 0 -5 -6Q-5 -12 -1 -12L-1 -12Q26 -12 46 -22Q66 -33 85 -61Q103 -89 125 -141L125 -141L338 -632Q339 -635 345 -635Q351 -636 352 -632L352 -632L592 -137Q616 -88 634 -60Q651 -33 668 -22Q685 -12 704 -12M213 -283L433 -283L317 -524L213 -283M755 0L755 0Q752 0 752 -6Q752 -12 755 -12L755 -12Q791 -12 803 -25Q815 -39 815 -81L815 -81L815 -265Q815 -300 808 -316Q801 -332 783 -332L783 -332Q775 -332 765 -329Q754 -326 740 -319L740 -319Q736 -318 734 -323Q731 -329 735 -331L735 -331L871 -394Q874 -395 875 -395L875 -395Q878 -395 882 -392Q885 -389 885 -385L885 -385Q885 -376 884 -346Q883 -316 883 -267L883 -267L883 -81Q883 -39 895 -25Q906 -12 943 -12L943 -12Q946 -12 946 -6Q946 0 943 0L943 0Q925 0 901 -1Q876 -2 849 -2L849 -2Q822 -2 798 -1Q774 0 755 0M843 -507L843 -507Q820 -507 807 -519Q793 -532 793 -555L793 -555Q793 -577 807 -589Q820 -601 843 -601L843 -601Q865 -601 878 -589Q890 -577 890 -555L890 -555Q890 -507 843 -507M1000 0L1000 0Q998 0 998 -6Q998 -12 1000 -12L1000 -12Q1037 -12 1049 -25Q1060 -39 1060 -81L1060 -81L1060 -595Q1060 -630 1054 -646Q1047 -662 1030 -662L1030 -662Q1015 -662 986 -649L986 -649Q985 -649 985 -649L985 -649Q982 -649 980 -653L980 -653Q978 -658 979 -659L979 -659Q979 -660 980 -660L980 -660L1112 -724Q1115 -725 1117 -725L1117 -725Q1120 -725 1124 -722Q1128 -719 1128 -715L1128 -715L1128 -198L1250 -302Q1285 -331 1279 -352Q1273 -374 1228 -374L1228 -374Q1226 -374 1226 -380Q1226 -386 1228 -386L1228 -386Q1253 -386 1278 -385Q1303 -384 1346 -384L1346 -384Q1385 -384 1408 -385Q1431 -386 1452 -386L1452 -386Q1454 -386 1454 -380Q1454 -374 1452 -374L1452 -374Q1428 -374 1398 -366Q1368 -359 1336 -342Q1303 -325 1271 -298L1271 -298L1220 -256L1350 -81Q1378 -43 1407 -27Q1435 -12 1464 -12L1464 -12Q1466 -12 1466 -6Q1466 0 1464 0L1464 0Q1445 0 1421 -1Q1397 -2 1369 -2L1369 -2Q1331 -2 1303 -1Q1275 0 1252 0L1252 0Q1249 0 1249 -6Q1249 -12 1252 -12L1252 -12Q1285 -12 1294 -22Q1303 -33 1289 -53L1289 -53L1168 -214L1128 -181L1128 -81Q1128 -39 1140 -25Q1152 -12 1189 -12L1189 -12Q1192 -12 1192 -6Q1192 0 1189 0L1189 0Q1170 0 1146 -1Q1122 -2 1095 -2Q1068 -2 1044 -1Q1019 0 1000 0M1682 13L1682 13Q1621 13 1577 -16Q1532 -45 1508 -93Q1484 -142 1484 -198L1484 -198Q1484 -250 1504 -288Q1523 -326 1555 -350Q1587 -375 1625 -387Q1663 -399 1700 -399L1700 -399Q1762 -399 1806 -369Q1850 -339 1874 -292Q1897 -245 1897 -193L1897 -193Q1897 -130 1867 -83Q1837 -37 1789 -12Q1740 13 1682 13M1711 -6L1711 -6Q1760 -6 1788 -44Q1815 -83 1815 -162L1815 -162Q1815 -229 1795 -277Q1775 -326 1742 -352Q1708 -379 1666 -379L1666 -379Q1617 -379 1591 -341Q1564 -304 1564 -231L1564 -231Q1564 -168 1583 -116Q1602 -65 1635 -35Q1668 -6 1711 -6M1970 -12L1970 -12L2205 -366Q2207 -369 2206 -371L2206 -371Q2205 -373 2200 -373L2200 -373Q2133 -373 2089 -364Q2045 -356 2019 -336Q1993 -316 1981 -278L1981 -278Q1980 -276 1975 -277L1975 -277Q1970 -278 1970 -280L1970 -280Q1970 -280 1970 -281L1970 -281L2006 -418Q2007 -420 2013 -420L2013 -420Q2018 -419 2018 -418L2018 -418Q2018 -417 2018 -417L2018 -417Q2013 -398 2025 -392Q2036 -386 2066 -386L2066 -386L2283 -386Q2288 -386 2291 -382Q2293 -378 2291 -374L2291 -374L2058 -23Q2056 -20 2057 -18L2057 -18Q2058 -16 2063 -16L2063 -16Q2126 -16 2166 -20Q2206 -24 2231 -35Q2255 -46 2269 -66Q2283 -87 2292 -119L2292 -119Q2293 -122 2298 -122Q2303 -122 2303 -119L2303 -119L2301 -11Q2301 -7 2299 -3Q2296 0 2292 0L2292 0L1977 0Q1973 0 1971 -4Q1968 -8 1970 -12"/><path class="wordmark-star" d="M0-100C7-36 22-9 80 0C22 9 7 36 0 100C-7 36-22 9-80 0C-22-9-7-36 0-100Z" transform="translate(2540 -450) scale(2.3)"/></svg>
+        </button>
+        <nav class="site-nav" aria-label="Разделы">
+          <button type="button" class="press site-nav__link" data-nav="story">Распаковка</button>
+          <button type="button" class="press site-nav__link" data-nav="explore">Очки</button>
+          <button type="button" class="press site-nav__link" data-nav="features">Функции</button>
+          <button type="button" class="press site-nav__link" data-nav="price">Цена</button>
+          <button type="button" class="press site-nav__link" data-nav="pro">Подписка</button>
+          <button type="button" class="press site-nav__link" data-nav="contacts">Контакты</button>
+        </nav>
+        <button type="button" class="btn-icon site-header__menu" aria-label="Меню" aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
+          <svg class="icon" aria-hidden="true" data-icon="menu"><use href="img/icons.svg#menu"/></svg>
+          <svg class="icon" aria-hidden="true" data-icon="x" hidden><use href="img/icons.svg#x"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- меню на телефоне: открывается кнопкой «Меню» -->
+    <nav id="site-menu" class="site-menu animate-rise" aria-label="Разделы" hidden>
+      <button type="button" class="site-menu__link" data-nav="story">Распаковка</button>
+      <button type="button" class="site-menu__link" data-nav="explore">Очки</button>
+      <button type="button" class="site-menu__link" data-nav="features">Функции</button>
+      <button type="button" class="site-menu__link" data-nav="price">Цена</button>
+      <button type="button" class="site-menu__link" data-nav="pro">Подписка</button>
+      <button type="button" class="site-menu__link" data-nav="contacts">Контакты</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== Первый экран: очки перед полной луной, заголовок, две кнопки ===== -->
+    <section class="hero">
+      <!-- редкие звёзды со стороны луны (их ставит js/main.js) -->
+      <div class="hero__sky" aria-hidden="true" data-hero-stars></div>
+      <div class="wrap hero__grid">
+        <div class="hero__moon-col">
+          <!-- «ай» и «көз» одной картинкой: очки стоят перед полной луной и шире её -->
+          <div class="hero__moon animate-moonrise">
+            <svg viewBox="0 0 200 200" width="100%" height="100%" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="hero-moon-halo"><stop offset="68%" stop-color="#BFC9FF" stop-opacity="0.26"/><stop offset="80%" stop-color="#BFC9FF" stop-opacity="0.08"/><stop offset="100%" stop-color="#BFC9FF" stop-opacity="0"/></radialGradient>
+                <radialGradient id="hero-moon-soft"><stop offset="84%" stop-color="#fff"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                <linearGradient id="hero-moon-edge"><stop offset="0%" stop-color="#fff" stop-opacity="0"/><stop offset="9%" stop-color="#fff"/></linearGradient>
+                <mask id="hero-moon-lit" maskUnits="userSpaceOnUse" x="30" y="30" width="140" height="140"><rect x="95.8" y="30" width="74.2" height="140" fill="url(#hero-moon-edge)"/><ellipse cx="100" cy="100" rx="83.3333" ry="83.3333" fill="url(#hero-moon-soft)"/></mask>
+                <clipPath id="hero-moon-disc"><circle cx="100" cy="100" r="70"/></clipPath>
+                <radialGradient id="hero-moon-limb"><stop offset="55%" stop-color="#050818" stop-opacity="0"/><stop offset="86%" stop-color="#050818" stop-opacity=".07"/><stop offset="100%" stop-color="#050818" stop-opacity=".22"/></radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#hero-moon-halo)"/>
+              <g clip-path="url(#hero-moon-disc)">
+                <rect x="30" y="30" width="140" height="140" fill="#0B1033"/>
+                <image href="img/moon-face-512.webp" x="30" y="30" width="140" height="140" preserveAspectRatio="none" opacity="0.1"/>
+                <g mask="url(#hero-moon-lit)">
+                  <rect x="30" y="30" width="140" height="140" fill="#F1EFE6"/>
+                  <image href="img/moon-face-512.webp" x="30" y="30" width="140" height="140" preserveAspectRatio="none"/>
+                </g>
+                <circle cx="100" cy="100" r="70" fill="url(#hero-moon-limb)"/>
+              </g>
+              <circle cx="100" cy="100" r="69.5" fill="none" stroke="#6E79B3" stroke-opacity="0.45" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <img class="hero__glasses" src="img/hero-glasses.webp" alt="" width="1400" height="600" decoding="async">
+          </div>
+          <dl class="hero__gloss">
+            <div><dt lang="kk">ай</dt><dd>— луна</dd></div>
+            <div><dt lang="kk">көз</dt><dd>— глаз</dd></div>
+          </dl>
+        </div>
+        <div class="hero__text-col">
+          <h1 class="hero__title">Очки, которые переводят разговор</h1>
+          <p class="hero__lead" data-tidy>Собеседник говорит на своём языке — вы слышите перевод. Ещё Aikoz снимает фото и видео от первого лица и играет музыку, а руки остаются свободными.</p>
+          <div class="hero__actions">
+            <button type="button" class="btn btn--primary btn--lg" data-go="story">
+              <svg class="icon" aria-hidden="true"><use href="img/icons.svg#package-open"/></svg> Открыть коробку
+            </button>
+            <button type="button" class="btn btn--secondary btn--lg" data-go="contacts">
+              <svg class="icon icon--17" aria-hidden="true"><use href="img/icons.svg#message-circle"/></svg> Задать вопрос
+            </button>
+          </div>
+          <p class="hero__gift">
+            <svg class="icon icon--17 icon--halo" aria-hidden="true"><use href="img/icons.svg#gift"/></svg> Месяц Aikoz Pro в подарок при покупке очков
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Распаковка: заполняет скрипт (3D — js/sections/story.js, шагами — js/sections/story-static.js) ===== -->
+    <section id="story"></section>
+
+    <!-- ===== «Покрутите и нажмите»: заполняет js/sections/explore.js ===== -->
+    <section id="explore"></section>
+
+    <!-- ===== Что умеют очки ===== -->
+    <section id="features" class="features">
+      <div class="wrap features__inner">
+        <h2 class="h2">Что умеют очки</h2>
+        <ul class="features__list">
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#languages"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Перевод в ухо <span class="chip">Aikoz Pro</span></h3>
+              <p class="body-text features__text" data-tidy>Собеседник говорит — вы слышите перевод в очках. Русский, казахский, английский, китайский, турецкий, корейский.</p>
+            </div>
+          </li>
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#camera"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Фото и видео от первого лица</h3>
+              <p class="body-text features__text" data-tidy>Камера 8 Мп, кадр 3280 × 2464. Одно нажатие кнопки на дужке — и кадр готов.</p>
+            </div>
+          </li>
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#mic"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Диктофон</h3>
+              <p class="body-text features__text" data-tidy>Двойное нажатие записывает встречу или мысль. Запись попадает в приложение.</p>
+            </div>
+          </li>
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#music"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Музыка и звонки</h3>
+              <p class="body-text features__text" data-tidy>Динамики у уха, управление — касанием дужки. Подключаются по Bluetooth.</p>
+            </div>
+          </li>
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#sparkles"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Голосовой ассистент</h3>
+              <p class="body-text features__text" data-tidy>Долгое касание дужки — и можно спросить голосом.</p>
+            </div>
+          </li>
+          <li class="features__item">
+            <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="img/icons.svg#smartphone"/></svg></span>
+            <div class="features__body">
+              <h3 class="h3 features__title">Приложение Aikoz</h3>
+              <p class="body-text features__text" data-tidy>Галерея, перевод и настройки очков. Windows и Android, iPhone — позже.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Что в коробке ===== -->
+    <section id="inbox" class="inbox">
+      <!-- волна с коробки Aikoz открывает часть про упаковку -->
+      <div class="wrap inbox__wave" aria-hidden="true">
+        <span class="inbox__rule"></span>
+        <svg class="ornament" viewBox="28 3 410 62" width="168" height="25" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M46 40.6C46 40.6 45.4 40.2 45.1 40.1C44.7 40 44.3 40 43.9 40.1C43.5 40.2 43.1 40.4 42.7 40.6C42.4 40.9 42 41.2 41.7 41.6C41.4 42 41.2 42.5 41.1 43C40.9 43.5 40.9 44.1 40.9 44.7C40.9 45.2 41.1 45.8 41.3 46.4C41.6 47 41.9 47.5 42.4 48C42.8 48.5 43.4 48.9 44 49.2C44.6 49.6 45.3 49.8 46 50C46.7 50.1 47.5 50.1 48.3 50C49 49.9 49.8 49.6 50.5 49.2C51.3 48.9 52 48.4 52.6 47.8C53.1 47.2 53.7 46.4 54.1 45.6C54.4 44.8 54.7 43.9 54.8 43C55 42.1 54.9 41.1 54.7 40.2C54.6 39.2 54.2 38.2 53.7 37.4C53.2 36.5 52.6 35.7 51.8 35C51.1 34.3 50.1 33.7 49.2 33.2C48.2 32.8 47.1 32.5 46 32.4C44.9 32.3 43.7 32.3 42.6 32.6C41.5 32.8 40.4 33.3 39.4 33.8C38.3 34.4 37.4 35.3 36.6 36.1C35.8 37.1 35.1 38.2 34.6 39.3C34.1 40.4 33.8 41.7 33.7 43C33.6 44.3 33.7 45.6 33.9 46.9C34.3 48.2 34.8 49.5 35.5 50.6C36.2 51.8 37.1 52.9 38.2 53.8C39.2 54.7 40.5 55.5 41.8 56C43.1 56.5 44 56.6 46 57C50.7 57.8 61.5 59.1 70 59.8C79.4 60.5 89.5 61.2 100 61C111.5 60.8 123.6 59.9 136 58.5C149.5 57 163.8 53.8 178 52C192.5 50.1 207.3 47.9 222 47.5C236.7 47.1 251.5 49.7 266 49.5C280.2 49.3 294.7 49.1 308 46.5C320.6 44.1 333 39.8 344 35C354.2 30.6 363.6 23.7 372 19.5C378.6 16.2 384.4 13.1 390 11.2C394.5 9.6 398.9 8.6 402.6 8.2C405.4 7.8 407.6 7.7 410 8C412.3 8.3 414.7 9 416.8 9.9C418.9 10.9 420.9 12.2 422.5 13.7C424.1 15.1 425.6 16.9 426.7 18.8C427.7 20.6 428.5 22.7 428.9 24.7C429.4 26.7 429.5 28.9 429.3 30.9C429.1 32.8 428.5 34.9 427.7 36.6C427 38.4 425.9 40 424.6 41.4C423.4 42.8 421.9 44 420.3 44.9C418.8 45.8 417 46.5 415.3 46.8C413.6 47.2 411.8 47.3 410.2 47.1C408.5 46.9 406.9 46.4 405.4 45.8C404 45.1 402.6 44.2 401.4 43.1C400.3 42.1 399.3 40.8 398.6 39.5C397.9 38.3 397.3 36.8 397.1 35.4C396.8 34 396.7 32.6 396.9 31.2C397.1 29.9 397.5 28.5 398 27.3C398.6 26.2 399.3 25.1 400.2 24.1C401 23.3 402.1 22.5 403.1 21.9C404.2 21.4 405.3 21 406.5 20.8C407.5 20.6 408.7 20.6 409.8 20.7C410.8 20.9 411.9 21.2 412.8 21.7C413.7 22.2 414.5 22.8 415.2 23.5C415.9 24.1 416.4 24.9 416.8 25.8C417.2 26.6 417.5 27.5 417.6 28.3C417.7 29.1 417.7 30 417.5 30.8C417.4 31.6 417.1 32.3 416.7 33C416.3 33.6 415.9 34.2 415.3 34.7C414.8 35.1 414.2 35.5 413.6 35.7C413 35.9 412.4 36.1 411.8 36.1C411.3 36.1 410.7 36 410.2 35.9C409.7 35.7 409.2 35.5 408.8 35.2C408.4 34.9 408.1 34.5 407.8 34.2C407.6 33.8 407.5 33.4 407.4 33C407.3 32.7 407.4 32 407.4 32" vector-effect="non-scaling-stroke"/></svg>
+        <span class="inbox__rule"></span>
+      </div>
+      <div class="wrap inbox__grid">
+        <div>
+          <h2 class="h2">Что в коробке</h2>
+          <!-- кнопки на широком экране стоят под заголовком… -->
+          <div class="inbox__actions inbox__actions--side">
+            <button type="button" class="btn btn--secondary" data-see-kit><svg class="icon icon--17" aria-hidden="true"><use href="img/icons.svg#box"/></svg> Посмотреть комплект в 3D</button>
+            <button type="button" class="btn btn--secondary" data-read-manual><svg class="icon icon--17" aria-hidden="true"><use href="img/icons.svg#book-open"/></svg> Прочитать инструкцию</button>
+          </div>
+        </div>
+        <div>
+          <dl class="inbox__list">
+            <div class="inbox__row"><dt>Очки</dt><dd data-tidy>Чёрная матовая оправа, прозрачные линзы.</dd></div>
+            <div class="inbox__row"><dt>Кейс-зарядка</dt><dd data-tidy>С кнопкой-застёжкой и USB-C. Очки заряжаются внутри.</dd></div>
+            <div class="inbox__row"><dt>Кабель USB-C</dt><dd data-tidy>Для зарядки кейса.</dd></div>
+            <div class="inbox__row"><dt>Инструкция</dt><dd data-tidy>Сложена гармошкой, на четырёх языках.</dd></div>
+          </dl>
+          <!-- …а на телефоне — под списком -->
+          <div class="inbox__actions inbox__actions--below">
+            <button type="button" class="btn btn--secondary" data-see-kit><svg class="icon icon--17" aria-hidden="true"><use href="img/icons.svg#box"/></svg> Посмотреть комплект в 3D</button>
+            <button type="button" class="btn btn--secondary" data-read-manual><svg class="icon icon--17" aria-hidden="true"><use href="img/icons.svg#book-open"/></svg> Прочитать инструкцию</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Приложение: лента экранов (снимки — папка app/) ===== -->
+    <section id="app" class="section">
+      <div class="wrap">
+        <h2 class="h2">Приложение</h2>
+        <p class="lead section-lead" data-tidy>Одно приложение для очков: снимать, смотреть снятое, переводить и настраивать.</p>
+        <div class="app-strip" role="group" aria-label="Экраны приложения">
+          <figure class="app-shot">
+            <img src="app/1-glasses-dark-ru.png" alt="Очки: заряд, память, съёмка" width="780" height="1688" loading="lazy" decoding="async">
+            <figcaption>Очки: заряд, память, съёмка</figcaption>
+          </figure>
+          <figure class="app-shot">
+            <img src="app/2-gallery-dark-ru.png" alt="Галерея" width="780" height="1688" loading="lazy" decoding="async">
+            <figcaption>Галерея</figcaption>
+          </figure>
+          <figure class="app-shot">
+            <img src="app/3-translate-dark-ru.png" alt="Перевод" width="780" height="1688" loading="lazy" decoding="async">
+            <figcaption>Перевод</figcaption>
+          </figure>
+          <figure class="app-shot">
+            <img src="app/8-events-dark-ru.png" alt="События" width="780" height="1688" loading="lazy" decoding="async">
+            <figcaption>События</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Цена: пока неизвестна — что идёт вместе с очками и подписка ===== -->
+    <section id="price" class="section">
+      <div class="wrap">
+        <div class="price__head">
+          <div>
+            <h2 class="h2">Цена появится скоро</h2>
+            <p class="lead section-lead" data-tidy>Оставьте заявку — напишем, когда откроем продажи.</p>
+          </div>
+          <button type="button" class="btn btn--primary btn--lg btn-wide-sm" data-go="contacts">Оставить заявку</button>
+        </div>
+        <div class="split-sheet price__sheet">
+          <div class="split-sheet__cell">
+            <h3 class="h3">Вместе с очками</h3>
+            <ul class="price__includes">
+              <li data-tidy><span class="price__dot" aria-hidden="true"></span>Очки Aikoz</li>
+              <li data-tidy><span class="price__dot" aria-hidden="true"></span>Кейс-зарядка и кабель USB-C</li>
+              <li data-tidy><span class="price__dot" aria-hidden="true"></span>Приложение для Windows и Android</li>
+              <li data-tidy><span class="price__dot" aria-hidden="true"></span>Гарантия и поддержка в Казахстане</li>
+            </ul>
+          </div>
+          <div class="split-sheet__cell">
+            <h3 class="h3">Aikoz Pro</h3>
+            <p class="body-text price__pro-text" data-tidy>Подписка на перевод в реальном времени. Оформить её можно ниже.</p>
+            <p class="gift-line" data-tidy><svg class="icon icon--halo" aria-hidden="true"><use href="img/icons.svg#gift"/></svg>Месяц Aikoz Pro в подарок при покупке очков</p>
+            <button type="button" class="btn btn--secondary price__pro-link" data-go="pro">Оформить подписку</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Подписка Aikoz Pro: что даёт, выбор плана, заявка (поведение — js/sections/info.js) ===== -->
+    <section id="pro" class="section">
+      <div class="wrap">
+        <h2 class="h2">Подписка Aikoz Pro</h2>
+        <p class="lead section-lead" data-tidy>Перевод разговора работает по подписке. Фото, видео, музыка и звонки — бесплатно навсегда.</p>
+        <div class="split-sheet pro__sheet">
+          <div class="split-sheet__cell">
+            <ul class="pro__features">
+              <li data-tidy><svg class="icon icon--20 icon--ok" aria-hidden="true"><use href="img/icons.svg#check"/></svg>Перевод разговора в реальном времени</li>
+              <li data-tidy><svg class="icon icon--20 icon--ok" aria-hidden="true"><use href="img/icons.svg#check"/></svg>Режим «Слушать» для лекций и встреч</li>
+              <li data-tidy><svg class="icon icon--20 icon--ok" aria-hidden="true"><use href="img/icons.svg#check"/></svg>Естественный голос озвучки</li>
+              <li data-tidy><svg class="icon icon--20 icon--ok" aria-hidden="true"><use href="img/icons.svg#check"/></svg>10 языков, включая казахский</li>
+            </ul>
+            <p class="gift-line" data-tidy><svg class="icon icon--halo" aria-hidden="true"><use href="img/icons.svg#gift"/></svg>Первый месяц — в подарок при покупке очков</p>
+          </div>
+          <div class="split-sheet__cell">
+            <h3 class="h3" id="pro-plan">Выберите план</h3>
+            <div class="pro__plans" role="radiogroup" aria-labelledby="pro-plan">
+              <button type="button" role="radio" aria-checked="true" class="press pro-plan" data-plan="year">
+                <span class="pro-plan__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="pro-plan__body">
+                  <span class="pro-plan__title">Год</span>
+                  <span class="caption pro-plan__note">Оплата раз в год</span>
+                </span>
+                <span class="pro-plan__price">Цена появится скоро</span>
+              </button>
+              <button type="button" role="radio" aria-checked="false" class="press pro-plan" data-plan="month">
+                <span class="pro-plan__mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="pro-plan__body">
+                  <span class="pro-plan__title">Месяц</span>
+                  <span class="caption pro-plan__note">Оплата каждый месяц</span>
+                </span>
+                <span class="pro-plan__price">Цена появится скоро</span>
+              </button>
+            </div>
+            <!-- ссылку на WhatsApp с выбранным планом подставляет js/sections/info.js -->
+            <a href="#contacts" class="btn btn--primary btn--lg pro__cta" data-pro-cta>
+              <svg class="icon" aria-hidden="true"><use href="img/icons.svg#message-circle"/></svg> Оформить подписку
+            </a>
+            <p class="caption pro__how" data-tidy>Онлайн-оплаты на сайте пока нет. Кнопка откроет WhatsApp с готовой заявкой: мы ответим, сколько стоит подписка и как её оплатить.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Вопросы и ответы: открыт один ответ (поведение — js/sections/info.js) ===== -->
+    <section id="faq" class="section">
+      <div class="wrap faq__grid">
+        <h2 class="h2">Вопросы и ответы</h2>
+        <div class="faq__list" data-faq>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-0" aria-expanded="true" aria-controls="faq-a-0">Как заряжать очки?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-0" role="region" aria-labelledby="faq-q-0" data-tidy>Сложите дужки и поставьте очки в кейс: контакты под переносицей встанут на разъём. Сам кейс заряжается через USB-C.</p>
+          </div>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-1" aria-expanded="false">С какими устройствами работают очки?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-1" role="region" aria-labelledby="faq-q-1" data-tidy hidden>Приложение Aikoz есть для Windows и Android. Версия для iPhone появится позже. Музыку очки играют по Bluetooth, как обычные наушники.</p>
+          </div>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-2" aria-expanded="false">На каких языках приложение?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-2" role="region" aria-labelledby="faq-q-2" data-tidy hidden>На русском, казахском и английском.</p>
+          </div>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-3" aria-expanded="false">Какие языки переводят очки?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-3" role="region" aria-labelledby="faq-q-3" data-tidy hidden>Русский, казахский, английский, китайский, турецкий и корейский. Перевод входит в подписку «Aikoz Pro»; первый месяц — в подарок при покупке очков.</p>
+          </div>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-4" aria-expanded="false">Где хранятся мои фото и записи?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-4" role="region" aria-labelledby="faq-q-4" data-tidy hidden>На вашем устройстве. С очков в приложение они переносятся по Wi-Fi.</p>
+          </div>
+          <div class="faq__item">
+            <h3><button type="button" class="faq__q" id="faq-q-5" aria-expanded="false">Куда попадают снимки из проб на этом сайте?<svg class="icon icon--20 icon--halo faq__plus" aria-hidden="true"><use href="img/icons.svg#plus"/></svg></button></h3>
+            <p class="body-text faq__a animate-rise" id="faq-a-5" role="region" aria-labelledby="faq-q-5" data-tidy hidden>Никуда. Они остаются в вашем браузере и исчезают, когда вы закрываете страницу.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Контакты: список и кнопки формы строит js/sections/contacts.js из js/content/contacts.js ===== -->
+    <section id="contacts" class="section">
+      <div class="wrap contacts__grid">
+        <div>
+          <h2 class="h2">Остались вопросы?</h2>
+          <p class="lead section-lead" data-tidy>Напишите или позвоните — ответим про очки, сроки и условия.</p>
+          <ul class="contacts__links" data-contact-links></ul>
+        </div>
+        <!-- форма ничего не отправляет сама: открывает WhatsApp или почту с готовым текстом -->
+        <form class="sheet" data-question-form hidden>
+          <h3 class="h3">Задать вопрос</h3>
+          <label class="form-label">Ваше имя
+            <input class="field" name="name" autocomplete="name" maxlength="80">
+          </label>
+          <label class="form-label">Ваш вопрос
+            <textarea class="field contacts__question" name="question" maxlength="1000" required aria-describedby="question-note"></textarea>
+          </label>
+          <div class="contacts__send" data-send></div>
+          <p id="question-note" class="contacts__note" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Подвал: знак, строка о названии, волна-орнамент ===== -->
+  <footer class="site-footer">
+    <div class="wrap site-footer__row">
+      <div>
+        <svg class="wordmark" viewBox="-10 -745 2750 770" width="157" height="44" fill="currentColor" focusable="false" role="img" aria-label="Aikoz"><path d="M704 -12L704 -12Q709 -12 709 -6Q709 0 704 0L704 0Q675 0 645 -2Q614 -4 585 -4L585 -4Q553 -4 530 -2Q506 0 477 0L477 0Q473 0 473 -6Q473 -12 477 -12L477 -12Q526 -12 537 -27Q548 -43 526 -89L526 -89L443 -261L204 -261L148 -132Q122 -71 145 -41Q168 -12 231 -12L231 -12Q236 -12 236 -6Q236 0 231 0L231 0Q201 0 176 -2Q151 -4 113 -4L113 -4Q76 -4 54 -2Q31 0 -1 0L-1 0Q-5 0 -5 -6Q-5 -12 -1 -12L-1 -12Q26 -12 46 -22Q66 -33 85 -61Q103 -89 125 -141L125 -141L338 -632Q339 -635 345 -635Q351 -636 352 -632L352 -632L592 -137Q616 -88 634 -60Q651 -33 668 -22Q685 -12 704 -12M213 -283L433 -283L317 -524L213 -283M755 0L755 0Q752 0 752 -6Q752 -12 755 -12L755 -12Q791 -12 803 -25Q815 -39 815 -81L815 -81L815 -265Q815 -300 808 -316Q801 -332 783 -332L783 -332Q775 -332 765 -329Q754 -326 740 -319L740 -319Q736 -318 734 -323Q731 -329 735 -331L735 -331L871 -394Q874 -395 875 -395L875 -395Q878 -395 882 -392Q885 -389 885 -385L885 -385Q885 -376 884 -346Q883 -316 883 -267L883 -267L883 -81Q883 -39 895 -25Q906 -12 943 -12L943 -12Q946 -12 946 -6Q946 0 943 0L943 0Q925 0 901 -1Q876 -2 849 -2L849 -2Q822 -2 798 -1Q774 0 755 0M843 -507L843 -507Q820 -507 807 -519Q793 -532 793 -555L793 -555Q793 -577 807 -589Q820 -601 843 -601L843 -601Q865 -601 878 -589Q890 -577 890 -555L890 -555Q890 -507 843 -507M1000 0L1000 0Q998 0 998 -6Q998 -12 1000 -12L1000 -12Q1037 -12 1049 -25Q1060 -39 1060 -81L1060 -81L1060 -595Q1060 -630 1054 -646Q1047 -662 1030 -662L1030 -662Q1015 -662 986 -649L986 -649Q985 -649 985 -649L985 -649Q982 -649 980 -653L980 -653Q978 -658 979 -659L979 -659Q979 -660 980 -660L980 -660L1112 -724Q1115 -725 1117 -725L1117 -725Q1120 -725 1124 -722Q1128 -719 1128 -715L1128 -715L1128 -198L1250 -302Q1285 -331 1279 -352Q1273 -374 1228 -374L1228 -374Q1226 -374 1226 -380Q1226 -386 1228 -386L1228 -386Q1253 -386 1278 -385Q1303 -384 1346 -384L1346 -384Q1385 -384 1408 -385Q1431 -386 1452 -386L1452 -386Q1454 -386 1454 -380Q1454 -374 1452 -374L1452 -374Q1428 -374 1398 -366Q1368 -359 1336 -342Q1303 -325 1271 -298L1271 -298L1220 -256L1350 -81Q1378 -43 1407 -27Q1435 -12 1464 -12L1464 -12Q1466 -12 1466 -6Q1466 0 1464 0L1464 0Q1445 0 1421 -1Q1397 -2 1369 -2L1369 -2Q1331 -2 1303 -1Q1275 0 1252 0L1252 0Q1249 0 1249 -6Q1249 -12 1252 -12L1252 -12Q1285 -12 1294 -22Q1303 -33 1289 -53L1289 -53L1168 -214L1128 -181L1128 -81Q1128 -39 1140 -25Q1152 -12 1189 -12L1189 -12Q1192 -12 1192 -6Q1192 0 1189 0L1189 0Q1170 0 1146 -1Q1122 -2 1095 -2Q1068 -2 1044 -1Q1019 0 1000 0M1682 13L1682 13Q1621 13 1577 -16Q1532 -45 1508 -93Q1484 -142 1484 -198L1484 -198Q1484 -250 1504 -288Q1523 -326 1555 -350Q1587 -375 1625 -387Q1663 -399 1700 -399L1700 -399Q1762 -399 1806 -369Q1850 -339 1874 -292Q1897 -245 1897 -193L1897 -193Q1897 -130 1867 -83Q1837 -37 1789 -12Q1740 13 1682 13M1711 -6L1711 -6Q1760 -6 1788 -44Q1815 -83 1815 -162L1815 -162Q1815 -229 1795 -277Q1775 -326 1742 -352Q1708 -379 1666 -379L1666 -379Q1617 -379 1591 -341Q1564 -304 1564 -231L1564 -231Q1564 -168 1583 -116Q1602 -65 1635 -35Q1668 -6 1711 -6M1970 -12L1970 -12L2205 -366Q2207 -369 2206 -371L2206 -371Q2205 -373 2200 -373L2200 -373Q2133 -373 2089 -364Q2045 -356 2019 -336Q1993 -316 1981 -278L1981 -278Q1980 -276 1975 -277L1975 -277Q1970 -278 1970 -280L1970 -280Q1970 -280 1970 -281L1970 -281L2006 -418Q2007 -420 2013 -420L2013 -420Q2018 -419 2018 -418L2018 -418Q2018 -417 2018 -417L2018 -417Q2013 -398 2025 -392Q2036 -386 2066 -386L2066 -386L2283 -386Q2288 -386 2291 -382Q2293 -378 2291 -374L2291 -374L2058 -23Q2056 -20 2057 -18L2057 -18Q2058 -16 2063 -16L2063 -16Q2126 -16 2166 -20Q2206 -24 2231 -35Q2255 -46 2269 -66Q2283 -87 2292 -119L2292 -119Q2293 -122 2298 -122Q2303 -122 2303 -119L2303 -119L2301 -11Q2301 -7 2299 -3Q2296 0 2292 0L2292 0L1977 0Q1973 0 1971 -4Q1968 -8 1970 -12"/><path class="wordmark-star" d="M0-100C7-36 22-9 80 0C22 9 7 36 0 100C-7 36-22 9-80 0C-22-9-7-36 0-100Z" transform="translate(2540 -450) scale(2.3)"/></svg>
+        <p class="site-footer__line">ай — луна, көз — глаз. Стартап из Казахстана</p>
+      </div>
+      <div class="site-footer__side">
+        <svg class="ornament" viewBox="28 3 410 62" width="168" height="25" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M46 40.6C46 40.6 45.4 40.2 45.1 40.1C44.7 40 44.3 40 43.9 40.1C43.5 40.2 43.1 40.4 42.7 40.6C42.4 40.9 42 41.2 41.7 41.6C41.4 42 41.2 42.5 41.1 43C40.9 43.5 40.9 44.1 40.9 44.7C40.9 45.2 41.1 45.8 41.3 46.4C41.6 47 41.9 47.5 42.4 48C42.8 48.5 43.4 48.9 44 49.2C44.6 49.6 45.3 49.8 46 50C46.7 50.1 47.5 50.1 48.3 50C49 49.9 49.8 49.6 50.5 49.2C51.3 48.9 52 48.4 52.6 47.8C53.1 47.2 53.7 46.4 54.1 45.6C54.4 44.8 54.7 43.9 54.8 43C55 42.1 54.9 41.1 54.7 40.2C54.6 39.2 54.2 38.2 53.7 37.4C53.2 36.5 52.6 35.7 51.8 35C51.1 34.3 50.1 33.7 49.2 33.2C48.2 32.8 47.1 32.5 46 32.4C44.9 32.3 43.7 32.3 42.6 32.6C41.5 32.8 40.4 33.3 39.4 33.8C38.3 34.4 37.4 35.3 36.6 36.1C35.8 37.1 35.1 38.2 34.6 39.3C34.1 40.4 33.8 41.7 33.7 43C33.6 44.3 33.7 45.6 33.9 46.9C34.3 48.2 34.8 49.5 35.5 50.6C36.2 51.8 37.1 52.9 38.2 53.8C39.2 54.7 40.5 55.5 41.8 56C43.1 56.5 44 56.6 46 57C50.7 57.8 61.5 59.1 70 59.8C79.4 60.5 89.5 61.2 100 61C111.5 60.8 123.6 59.9 136 58.5C149.5 57 163.8 53.8 178 52C192.5 50.1 207.3 47.9 222 47.5C236.7 47.1 251.5 49.7 266 49.5C280.2 49.3 294.7 49.1 308 46.5C320.6 44.1 333 39.8 344 35C354.2 30.6 363.6 23.7 372 19.5C378.6 16.2 384.4 13.1 390 11.2C394.5 9.6 398.9 8.6 402.6 8.2C405.4 7.8 407.6 7.7 410 8C412.3 8.3 414.7 9 416.8 9.9C418.9 10.9 420.9 12.2 422.5 13.7C424.1 15.1 425.6 16.9 426.7 18.8C427.7 20.6 428.5 22.7 428.9 24.7C429.4 26.7 429.5 28.9 429.3 30.9C429.1 32.8 428.5 34.9 427.7 36.6C427 38.4 425.9 40 424.6 41.4C423.4 42.8 421.9 44 420.3 44.9C418.8 45.8 417 46.5 415.3 46.8C413.6 47.2 411.8 47.3 410.2 47.1C408.5 46.9 406.9 46.4 405.4 45.8C404 45.1 402.6 44.2 401.4 43.1C400.3 42.1 399.3 40.8 398.6 39.5C397.9 38.3 397.3 36.8 397.1 35.4C396.8 34 396.7 32.6 396.9 31.2C397.1 29.9 397.5 28.5 398 27.3C398.6 26.2 399.3 25.1 400.2 24.1C401 23.3 402.1 22.5 403.1 21.9C404.2 21.4 405.3 21 406.5 20.8C407.5 20.6 408.7 20.6 409.8 20.7C410.8 20.9 411.9 21.2 412.8 21.7C413.7 22.2 414.5 22.8 415.2 23.5C415.9 24.1 416.4 24.9 416.8 25.8C417.2 26.6 417.5 27.5 417.6 28.3C417.7 29.1 417.7 30 417.5 30.8C417.4 31.6 417.1 32.3 416.7 33C416.3 33.6 415.9 34.2 415.3 34.7C414.8 35.1 414.2 35.5 413.6 35.7C413 35.9 412.4 36.1 411.8 36.1C411.3 36.1 410.7 36 410.2 35.9C409.7 35.7 409.2 35.5 408.8 35.2C408.4 34.9 408.1 34.5 407.8 34.2C407.6 33.8 407.5 33.4 407.4 33C407.3 32.7 407.4 32 407.4 32" vector-effect="non-scaling-stroke"/></svg>
+        <p class="caption">© Aikoz, <span data-year>2026</span></p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+/* Раздел «Покрутите и нажмите»: сцена с моделью, карточки деталей, панели проб и галерея.
+   Цвета — только переменными из base.css. Анимируются только transform и opacity. */
+
+/* ---------- раздел ---------- */
+.ex { position: relative; }
+.ex-min0 { min-width: 0; }
+/* абзац под заголовком раздела */
+.ex-lead { margin-top: 12px; max-width: 672px; font-size: 17px; line-height: 1.6; color: var(--muted); }
+
+/* переключатель предметов: на телефоне прокручивается вбок; поля оставляют место для свечения выбранного */
+.ex-items { display: flex; gap: 8px; overflow-x: auto; margin: 8px -16px -20px; padding: 24px 16px; }
+
+/* сцена слева, колонка справа (с 1024 px); на телефоне — друг под другом */
+.ex-grid { display: grid; gap: 16px; margin-top: 12px; grid-template-columns: minmax(0, 1fr); }
+/* вне экрана и на скрытой вкладке все бесконечные анимации раздела стоят */
+.ex-grid.is-asleep *, .ex-grid.is-asleep .hotspot-dot::after { animation-play-state: paused !important; }
+
+/* ---------- сцена ---------- */
+.ex-stage {
+  position: relative; height: 58vh; min-height: 340px; overflow: hidden;
+  border-radius: 20px; border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+}
+.ex-fill { position: absolute; inset: 0; }
+.explore-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* мягкий свет за моделью: чёрная оправа читается на тёмной сцене */
+.explore-sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; container-type: size; }
+.explore-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 46% 50% at 50% 50%, rgba(214, 221, 255, .42), rgba(191, 201, 255, .16) 55%, rgba(191, 201, 255, 0) 100%);
+}
+
+/* браузер без 3D: картинка предмета и пояснение */
+.ex-fallback {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px; text-align: center;
+}
+.ex-fallback-img { max-height: 70%; width: auto; border-radius: 12px; }
+.ex-fallback-text { font-size: 15px; color: var(--muted); }
+
+/* подписи по углам сцены */
+.ex-loading { position: absolute; left: 12px; bottom: 12px; pointer-events: none; color: var(--faint); }
+.ex-zoom-hint { display: none; position: absolute; left: 12px; top: 12px; pointer-events: none; color: var(--faint); }
+.ex-zoom { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+/* имя выбранной детали: слева внизу, не заходит под кнопки масштаба */
+.ex-part-label {
+  position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px;
+  min-height: 44px; max-width: calc(100% - 184px); pointer-events: none;
+}
+.ex-part-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 999px; background: var(--halo); }
+.ex-part-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- точки на модели: цвет ореола, выбранная — лунный свет; кольцо пульсирует раз в 3,6 с ---------- */
+.ex-hotspots { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.hotspot {
+  position: absolute; left: 0; top: 0; margin: -22px 0 0 -22px; width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center; pointer-events: auto;
+}
+.hotspot-dot {
+  position: relative; width: 16px; height: 16px; border-radius: 999px;
+  background: var(--halo); border: 2px solid var(--on-accent);
+  box-shadow: 0 0 0 2px rgba(191, 201, 255, .45);
+  transition: transform .3s var(--ease-brand);
+}
+.hotspot-dot::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 999px; border: 2px solid var(--halo);
+  animation: ping 3.6s var(--ease-press) infinite;
+}
+.hotspot.is-paused .hotspot-dot::after { animation-play-state: paused; }
+.hotspot:hover .hotspot-dot, .hotspot-dot.is-on { transform: scale(1.3); background: var(--moon); }
+@keyframes ping {
+  0% { opacity: .55; transform: scale(1); }
+  45%, 100% { opacity: 0; transform: scale(1.6); }
+}
+
+/* ---------- под сценой: виды очков и действия с кейсом, коробкой, инструкцией ---------- */
+.ex-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; margin-top: 12px; }
+.ex-note { margin-top: 8px; font-size: 15px; line-height: 1.625; color: var(--muted); }
+
+/* ---------- правая колонка ---------- */
+.ex-column { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.ex-column > * { min-width: 0; }
+
+/* карточка детали */
+.ex-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ex-card-text { margin-top: 8px; font-size: 15px; line-height: 1.625; color: var(--muted); }
+.ex-card-sub { margin-top: 20px; font-weight: 600; }
+.ex-gestures { margin-top: 6px; border-top: 1px solid var(--line); }
+.ex-gesture { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
+.ex-gesture + .ex-gesture { border-top: 1px solid var(--line); }
+.ex-gesture-label { font-size: 15px; font-weight: 600; }
+.ex-gesture-result { font-size: 15px; line-height: 1.375; color: var(--muted); }
+.ex-on-model { display: flex; align-items: flex-start; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.ex-on-model .icon { margin-top: 1px; }
+/* список деталей */
+.ex-part-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+@media (min-width: 640px) {
+  .ex-items { margin-left: -32px; margin-right: -32px; padding-left: 32px; padding-right: 32px; }
+  .ex-stage { height: 66vh; }
+}
+@media (min-width: 1024px) {
+  .ex-grid { grid-template-columns: minmax(0, 1fr) 370px; }
+  .ex-stage { height: 620px; }
+  .ex-zoom-hint { display: block; }
+}
+
+/* ---------- панель пробы ---------- */
+.tr-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+/* содержимое пробы: блоки друг под другом через 12 px (спрятанные места не занимают) */
+.tr-stack { display: flex; flex-direction: column; gap: 12px; }
+.tr-stack--4 { gap: 16px; }
+.tr-stack > * { min-width: 0; }
+.tr-min0 { min-width: 0; }
+.tr-block { display: block; }
+.tr-muted { color: var(--muted); }
+.tr-halo { color: var(--halo); }
+.tr-ok { color: var(--ok); }
+.tr-nums { font-variant-numeric: tabular-nums; }
+.tr-mt-2 { margin-top: 8px; }
+.tr-mt-3 { margin-top: 12px; }
+.tr-mt-4 { margin-top: 16px; }
+.tr-min44 { min-height: 44px; }
+.tr-text { font-size: 15px; line-height: 1.625; color: var(--muted); }
+.tr-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.tr-row--center { align-items: center; }
+.tr-row--middle { justify-content: center; }
+.tr-row--gap3 { gap: 12px; }
+
+/* объяснение перед запросом камеры или микрофона */
+.tr-permission { border-radius: 12px; border: 1px solid var(--line); background: var(--raised); padding: 16px; }
+.tr-permission-title { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; line-height: 1.375; }
+/* доступ не дали — показываем пример */
+.tr-denied { border-radius: 12px; background: var(--chip); padding: 10px 14px; font-size: 15px; line-height: 1.625; color: var(--muted); }
+
+/* картинка с камеры: рамка 4 : 3 стоит сразу, картинка только проявляется */
+.tr-preview { position: relative; overflow: hidden; }
+.tr-video { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; opacity: 0; transition: opacity .3s var(--ease-brand); }
+.tr-video.is-live { opacity: 1; }
+.tr-preview-wait { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--dim); }
+/* вспышка в момент снимка */
+.tr-flash { position: absolute; inset: 0; background: color-mix(in srgb, var(--moon) 80%, transparent); }
+.tr-done { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--muted); }
+/* время записи поверх картинки */
+.tr-rec-label { position: absolute; left: 12px; top: 12px; display: inline-flex; align-items: center; gap: 8px; }
+
+/* диктофон: столбики уровня */
+.tr-bars { display: flex; align-items: center; justify-content: center; gap: 4px; height: 96px; }
+.tr-bar { width: 6px; height: 64px; border-radius: 999px; background: var(--halo); }
+.tr-bars.is-rec .tr-bar { background: var(--rec); }
+
+/* кнопка записи и показание под ней: старт и стоп ничего не сдвигают */
+.tr-rec-controls { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.tr-rec-button { min-width: 168px; }
+.tr-rec-gauge { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.tr-rec-text { font-size: 15px; line-height: 1.375; }
+.tr-status { display: flex; align-items: center; gap: 8px; }
+.tr-status--bold { font-weight: 600; }
+
+/* музыка */
+.tr-music-card { display: flex; align-items: center; gap: 16px; padding: 16px; }
+.tr-music-disc {
+  display: flex; flex-shrink: 0; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 999px; background: var(--chip); color: var(--dim);
+}
+.tr-music-disc.is-on { background: var(--raised); color: var(--moon); box-shadow: var(--shadow-halo); }
+.tr-music-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 17px; font-weight: 600; }
+.tr-music-status { font-size: 15px; color: var(--faint); }
+.tr-music-status.is-on { color: var(--halo); }
+.tr-play-button { min-width: 120px; }
+.tr-volume { display: flex; align-items: center; gap: 14px; }
+.tr-volume-label { display: block; flex: 1; min-width: 0; }
+.tr-volume-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 15px; color: var(--muted); }
+.tr-volume-number { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--moon); }
+/* ползунок громкости: заметная дорожка и маленькая луна, за которую тянут */
+.tr-range-box { position: relative; display: block; margin-top: 8px; }
+.tr-range-line {
+  position: absolute; left: 0; right: 0; top: 50%; height: 6px; transform: translateY(-50%);
+  border-radius: 999px; background: var(--chip); pointer-events: none;
+}
+.tr-range {
+  position: relative; display: block; width: 100%; height: 24px; margin: 0; padding: 0; cursor: pointer;
+  -webkit-appearance: none; appearance: none; background: transparent;
+}
+.tr-range::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: var(--control); }
+.tr-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; margin-top: -7px;
+  border-radius: 999px; background: var(--moon);
+}
+.tr-range::-moz-range-track { height: 6px; border-radius: 999px; background: var(--control); }
+.tr-range::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 999px; background: var(--moon); }
+
+/* записанный диалог: ассистент и перевод */
+.tr-note { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.625; color: var(--muted); }
+.tr-note--center { justify-content: center; line-height: 1.5; }
+.tr-note-chip { margin-top: 2px; }
+.tr-lines { display: flex; flex-direction: column; gap: 8px; }
+.tr-line { display: flex; justify-content: flex-start; }
+.tr-line--me { justify-content: flex-end; }
+.tr-bubble { max-width: 85%; }
+.tr-bubble-text { font-size: 15px; font-weight: 600; line-height: 1.375; }
+.tr-heard { margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--halo); }
+
+/* звонок */
+.tr-call { text-align: center; }
+.tr-call-ring {
+  display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin: 0 auto;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--dim);
+}
+.tr-call-ring.is-ringing { border-color: var(--halo); color: var(--halo); }
+.tr-call-ring.is-talking { border-color: color-mix(in srgb, var(--ok) 60%, transparent); color: var(--ok); }
+.tr-call-status { margin-top: 4px; font-size: 15px; color: var(--muted); }
+/* строка постоянной высоты под подсказку или таймер */
+.tr-call-line { display: flex; align-items: center; justify-content: center; min-height: 40px; }
+.tr-call-time { font-size: 26px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* питание */
+.tr-power-card { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.tr-power-icon { color: var(--dim); }
+.tr-power-icon.is-on { color: var(--ok); }
+.tr-power-text { font-size: 17px; font-weight: 600; }
+.tr-power-button { min-width: 128px; align-self: flex-start; }
+
+/* ---------- галерея ---------- */
+.gal-count { margin-left: 8px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--faint); }
+.gal-privacy { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+/* полоса держит высоту миниатюры и пустой: первый снимок не сдвигает страницу */
+.gal-holder { display: flex; align-items: center; min-height: 104px; margin-top: 16px; }
+.gal-strip { display: flex; gap: 8px; width: 100%; overflow-x: auto; padding-bottom: 8px; }
+.gal-thumb {
+  position: relative; width: 96px; height: 96px; flex-shrink: 0; overflow: hidden;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--bg);
+}
+.gal-thumb-media { width: 100%; height: 100%; object-fit: cover; }
+.gal-thumb-play {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--bg) 40%, transparent);
+}
+.gal-thumb-audio { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; color: var(--halo); }
+.gal-thumb-tag { position: absolute; left: 4px; top: 4px; }
+
+/* окно просмотра: поверх всей страницы */
+.gal-viewer { position: fixed; inset: 0; z-index: 50; }
+.gal-backdrop {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+}
+.gal-view-box { width: 100%; max-width: 672px; border-radius: 20px; border: 1px solid var(--line); background: var(--surface); padding: 12px; }
+.gal-view-inset { overflow: hidden; }
+.gal-view-media { width: 100%; max-height: 70vh; }
+.gal-view-photo { object-fit: contain; }
+.gal-view-audio { padding: 24px; }
+.gal-view-audio audio { display: block; width: 100%; }
+.gal-view-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-left: 8px; }
+.gal-view-label { font-size: 15px; color: var(--muted); }
+.gal-view-actions { display: flex; gap: 8px; }
+
+/* ---------- цвета для нарисованных примеров ----------
+   js/trials/samples.js рисует пример на canvas и узнаёт цвет токена по этим классам. */
+.text-bg { color: var(--bg); }
+.text-surface { color: var(--surface); }
+.text-raised { color: var(--raised); }
+.text-moon { color: var(--moon); }
+.text-halo { color: var(--halo); }

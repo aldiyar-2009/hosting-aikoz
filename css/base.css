@@ -1,0 +1,279 @@
+/* Aikoz — стиль «Лунная ночь». Основа сайта: цвета, шрифты, общие кнопки и панели, движение, луна.
+   Все цвета и кривые записаны один раз — в переменных ниже. В остальных файлах пишите var(--…), а не HEX. */
+
+:root {
+  /* ночное небо и поверхности над ним */
+  --bg: #070B24;
+  --surface: #131C4F;
+  --raised: #1B2663;
+  /* лунный свет: основной текст и маленькие луны; большой диск приглушён, чтобы не слепил */
+  --moon: #F1EFE6;
+  --moon-disc: #DDDACE;
+  /* текст второго плана, подписи, неактивное */
+  --muted: #C5CBE6;
+  --faint: #AEB6D6;
+  --dim: #9AA3C7;
+  /* ореол: ссылки, свечение, точки на модели, фокус */
+  --halo: #BFC9FF;
+  /* границы, которые должны быть видны: кнопки с контуром, поля ввода */
+  --control: #6E79B3;
+  /* золотая луна: одно главное действие на экране и звезда знака */
+  --accent: #F3C36B;
+  --accent-soft: rgba(243, 195, 107, .14);
+  --on-accent: #0A1238;
+  /* только украшение: тонкие линии и чипы */
+  --line: rgba(191, 201, 255, .14);
+  --chip: rgba(191, 201, 255, .10);
+  /* красный — только запись */
+  --rec: #E5484D;
+  --rec-text: #FF7A7E;
+  --ok: #6EE7B7;
+
+  --font-sans: 'Manrope Variable', Manrope, 'Noto Sans', system-ui, 'Segoe UI', sans-serif;
+  --font-display: 'Unbounded Variable', Unbounded, 'Manrope Variable', system-ui, sans-serif;
+  /* строка целиком системным шрифтом, когда в Manrope нет нужной казахской буквы */
+  --font-system: 'Segoe UI', Roboto, 'Noto Sans', system-ui, sans-serif;
+
+  --ease-brand: cubic-bezier(.22, 1, .36, 1);
+  --ease-press: cubic-bezier(.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(.05, .7, .1, 1);
+  --ease-exit: cubic-bezier(.3, 0, .8, .15);
+
+  --shadow-halo: 0 0 0 1px rgba(191, 201, 255, .18), 0 0 32px -6px rgba(191, 201, 255, .35);
+}
+
+/* ---------- сброс ---------- */
+*, *::before, *::after { box-sizing: border-box; border: 0 solid var(--line); }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; line-height: 1.5; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--moon);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { font-size: inherit; font-weight: inherit; }
+/* Unbounded — только h1 и h2; в нём нет казахских букв, казахские слова набираются Manrope */
+h1, h2 { font-family: var(--font-display); }
+a { color: inherit; text-decoration: none; }
+/* ссылка внутри абзаца по яркости не отличается от текста, поэтому подчёркнута */
+p a { text-decoration: underline; text-underline-offset: .2em; }
+button, input, textarea { font: inherit; color: inherit; }
+button { background: none; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: default; }
+img, svg, video, canvas { display: block; }
+img, video { max-width: 100%; height: auto; }
+[hidden] { display: none !important; }
+::selection { background: var(--accent); color: var(--on-accent); }
+:focus-visible { outline: 2px solid var(--halo); outline-offset: 2px; border-radius: 6px; }
+.font-system { font-family: var(--font-system); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+/* значок из img/icons.svg: <svg class="icon"><use href="img/icons.svg#camera"/></svg> */
+.icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ---------- страница ---------- */
+/* колонка страницы: все разделы и шапка стоят в ней */
+.wrap { width: 100%; max-width: 1152px; margin-left: auto; margin-right: auto; }
+/* поля и вертикальный ритм раздела */
+.section { scroll-margin-top: 24px; padding: 56px 16px; }
+.h2 { font-size: 26px; font-weight: 500; line-height: 1.15; }
+/* заголовок панели, карточки, строки списка: Manrope 20, жирный */
+.h3 { font-size: 20px; font-weight: 700; line-height: 1.375; }
+/* абзац под заголовком раздела */
+.lead { max-width: 576px; font-size: 17px; line-height: 1.6; color: var(--muted); }
+/* подписи и служебный текст: не мельче 13 px */
+.caption { font-size: 13px; line-height: 1.375; color: var(--faint); }
+@media (min-width: 640px) {
+  .section { padding: 80px 32px; }
+  .h2 { font-size: 34px; }
+}
+
+/* ---------- кнопки: пилюли 44 px; 48 px (.btn--lg) — главные действия разделов ---------- */
+.press { transition: transform .15s var(--ease-press), opacity .15s linear, background-color .15s linear, color .15s linear; }
+.press:active { transform: scale(.97); transition-duration: .1s; }
+
+.btn {
+  display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: 999px;
+  font-size: 15px; font-weight: 600; line-height: 1.5;
+  transition: transform .15s var(--ease-press), opacity .15s linear, background-color .15s linear, color .15s linear;
+}
+.btn:active { transform: scale(.97); transition-duration: .1s; }
+.btn--lg { min-height: 48px; padding: 0 24px; }
+/* золотая: одно главное действие на экран */
+.btn--primary { background: var(--accent); color: var(--on-accent); }
+.btn--primary:hover { opacity: .9; }
+/* с контуром: всё остальное */
+.btn--secondary { border: 1px solid var(--control); color: var(--moon); }
+.btn--secondary:hover { background: var(--chip); }
+/* красная: только «остановить запись»; текст на ней тёмный */
+.btn--stop { background: var(--rec); color: var(--on-accent); }
+.btn--stop:hover { opacity: .9; }
+.btn:disabled { opacity: .4; }
+/* на золотой и красной кнопке ореол не виден: ночное кольцо внутри и ореол снаружи */
+.btn--primary:focus-visible, .btn--stop:focus-visible {
+  outline: 2px solid var(--on-accent); outline-offset: -5px;
+  box-shadow: 0 0 0 2px var(--on-accent), 0 0 0 4px var(--halo);
+}
+/* кнопка-иконка: круг 44 px */
+.btn-icon {
+  display: flex; flex-shrink: 0; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 999px;
+  border: 1px solid var(--control); background: var(--surface); color: var(--moon);
+  transition: transform .15s var(--ease-press), opacity .15s linear, background-color .15s linear, color .15s linear;
+}
+.btn-icon:hover { background: var(--raised); }
+.btn-icon:active { transform: scale(.97); transition-duration: .1s; }
+
+/* переключатель: выбранное приподнято и светится (.is-on) */
+.tab { background: var(--chip); color: var(--muted); }
+.tab:hover { color: var(--moon); }
+.tab.is-on { background: var(--raised); color: var(--moon); box-shadow: var(--shadow-halo); }
+
+/* ---------- мелкие метки ---------- */
+/* чип: «скоро», «пример», «Aikoz Pro» */
+.chip, .chip--solid {
+  display: inline-flex; flex-shrink: 0; align-items: center; border-radius: 999px;
+  padding: 2px 10px; font-size: 13px; font-weight: 600; line-height: 20px;
+  background: var(--chip); color: var(--moon);
+}
+/* самая яркая метка: выдуманные данные нельзя принять за настоящие («пример» на миниатюре) */
+.chip--solid { background: var(--moon); color: var(--on-accent); font-weight: 700; }
+/* подпись поверх 3D-сцены: непрозрачная, с тонкой линией */
+.label {
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  padding: 6px 12px; font-size: 13px; font-weight: 600; line-height: 20px;
+}
+/* круглая подложка под значком */
+.icon-disc {
+  display: flex; flex-shrink: 0; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 999px; background: var(--chip); color: var(--halo);
+}
+.icon-disc .icon { width: 20px; height: 20px; }
+
+/* ---------- поверхности: радиус 20 px, тонкая линия вместо тени ---------- */
+.panel, .sheet { border-radius: 20px; border: 1px solid var(--line); background: var(--surface); }
+/* панель боковой колонки */
+.panel { padding: 16px; }
+/* лист страницы: цена, форма, окно */
+.sheet { padding: 20px; }
+@media (min-width: 640px) {
+  .panel { padding: 20px; }
+  .sheet { padding: 32px; }
+}
+/* мелкий блок внутри панели: радиус 12 px, на шаг темнее */
+.inset { border-radius: 12px; background: var(--bg); }
+/* поле ввода */
+.field {
+  display: block; width: 100%; border-radius: 12px; border: 1px solid var(--control); background: var(--bg);
+  padding: 12px 16px; font-size: 17px; font-weight: 400; color: var(--moon);
+}
+.field::placeholder { color: var(--faint); }
+.field:focus { border-color: var(--halo); }
+
+/* реплики: собеседник слева, владелец очков справа */
+.bubble-them { border-radius: 20px; border-bottom-left-radius: 6px; background: var(--raised); padding: 10px 14px; }
+.bubble-me { border-radius: 20px; border-bottom-right-radius: 6px; border: 1px solid var(--line); background: var(--bg); padding: 10px 14px; }
+
+/* точка идущей записи (пульс задаёт js/ui/parts.js) */
+.rec-dot { width: 10px; height: 10px; flex-shrink: 0; border-radius: 999px; background: var(--rec); }
+
+/* ---------- движение: меняются только transform и opacity ---------- */
+/* панель, карточка, вкладка появляется: 300 мс, 16 px вверх */
+.animate-rise { animation: rise .3s var(--ease-enter) both; }
+/* …и уходит: 200 мс */
+.animate-leave { animation: leave .2s var(--ease-exit) both; }
+/* единственное событие при открытии страницы: восход луны, один раз */
+.animate-moonrise { animation: moonrise 1s var(--ease-enter) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes leave { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(8px); } }
+@keyframes moonrise { from { opacity: 0; transform: translateY(48px); } to { opacity: 1; transform: none; } }
+
+/* ---------- большая луна за 3D-сценами (js/moon/sky-moon.js) ----------
+   Диск — снимок настоящей Луны (img/moon-face-*.webp, карта NASA LROC). Слои рисуются один раз;
+   смена фазы только двигает их (transform) или показывает и прячет (opacity). */
+.sky-moon { position: relative; aspect-ratio: 1 / 1; }
+.sky-moon-breath {
+  position: absolute; inset: -40%;
+  animation: halo-breath 7s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.sky-moon.is-paused .sky-moon-breath { animation-play-state: paused; }
+/* зерно против полос на слабом градиенте ореола */
+.sky-moon-breath::after {
+  content: ''; position: absolute; inset: 0;
+  background: url('../img/grain.png');
+  -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+}
+.sky-moon-halo {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(191, 201, 255, .3) 55.5%, rgba(191, 201, 255, .09) 70%, rgba(191, 201, 255, 0) 100%);
+  will-change: opacity;
+}
+@keyframes halo-breath { from { opacity: 1; transform: none; } to { opacity: .8; transform: scale(1.03); } }
+.sky-moon-disc {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  background: #DDDACE url('../img/moon-face-1024.webp') center / 100% 100% no-repeat;
+  isolation: isolate;
+}
+.sky-moon-left {
+  position: absolute; inset: 0 48.2% 0 0;
+  background: linear-gradient(90deg, #0B1033 90.7%, rgba(11, 16, 51, 0));
+}
+.sky-moon-shade, .sky-moon-bulge { position: absolute; inset: 0; will-change: transform, opacity; }
+.sky-moon-shade { border-radius: 50%; background: radial-gradient(closest-side, #0B1033 84%, rgba(11, 16, 51, 0)); }
+.sky-moon-bulge {
+  -webkit-mask-image: radial-gradient(closest-side, #000 84%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 84%, transparent 100%);
+}
+.sky-moon-face {
+  position: absolute; inset: 0;
+  background: #DDDACE url('../img/moon-face-1024.webp') center / 100% 100% no-repeat;
+  will-change: transform;
+}
+.sky-moon-earthshine {
+  position: absolute; inset: 0;
+  background: url('../img/moon-face-1024.webp') center / 100% 100% no-repeat;
+  opacity: .1;
+}
+.sky-moon-limb {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(5, 8, 24, 0) 62%, rgba(5, 8, 24, .07) 86%, rgba(5, 8, 24, .22) 100%);
+  box-shadow: inset 0 0 0 1px rgba(138, 150, 214, .28);
+}
+
+/* ---------- звёзды (js/moon/stars.js): мерцают 10–15 % звёзд, никогда не гаснут ---------- */
+.star {
+  position: absolute; border-radius: 50%; background: var(--moon);
+  animation: twinkle 5s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+.stars.is-paused .star { animation-play-state: paused; }
+@keyframes twinkle { from { opacity: 1; } to { opacity: .6; } }
+
+/* ---------- космос за всей страницей (js/moon/space-sky.js): один неподвижный слой ---------- */
+.space-sky {
+  position: fixed; inset: 0; height: 100vh; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 45% at 78% 22%, rgba(74, 86, 190, .16), rgba(74, 86, 190, 0) 70%),
+    radial-gradient(ellipse 50% 40% at 12% 70%, rgba(120, 72, 170, .11), rgba(120, 72, 170, 0) 70%),
+    radial-gradient(ellipse 45% 35% at 60% 95%, rgba(40, 120, 150, .08), rgba(40, 120, 150, 0) 70%),
+    linear-gradient(180deg, #04061A, #070B24 55%, #050818);
+}
+@supports (height: 1lvh) { .space-sky { height: 100lvh; } }
+.space-sky::after { content: ''; position: absolute; inset: 0; background: url('../img/grain.png'); }
+.space-sky-stars { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---------- «меньше движения»: ничего не движется, появление — только затухание до 150 мс ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-rise, .animate-leave, .animate-moonrise, .sky-moon-breath, .star, .hotspot-dot::after { animation: none !important; }
+  .press:active, .btn:active, .btn-icon:active { transform: none; }
+  * { transition-duration: .15s !important; transition-property: opacity, color, background-color, border-color !important; }
+}
